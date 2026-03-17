@@ -1,25 +1,29 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
- http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-<parent>
- <groupId>com.ai.codereview</groupId>
- <artifactId>ai-code-review-platform</artifactId>
- <version>1.0.0</version>
-</parent>
+    <parent>
+        <groupId>com.ai.codereview</groupId>
+        <artifactId>ai-code-review-platform</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-<artifactId>common</artifactId>
+    <artifactId>common</artifactId>
+    <packaging>jar</packaging>
+    <name>common</name>
 
-<dependencies>
+    <dependencies>
 
- <dependency>
-  <groupId>org.projectlombok</groupId>
-  <artifactId>lombok</artifactId>
- </dependency>
+        <!-- Lombok for DTOs -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
 
-</dependencies>
+    </dependencies>
 
 </project>

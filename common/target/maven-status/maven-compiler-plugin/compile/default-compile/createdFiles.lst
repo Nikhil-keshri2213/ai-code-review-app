@@ -1,0 +1,3 @@
+com\aicodereview\common\dto\PullRequestEvent.class
+com\aicodereview\common\dto\ReviewResult.class
+com\aicodereview\common\dto\ReviewRequest.class

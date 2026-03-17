@@ -9,6 +9,7 @@
  <groupId>com.ai.codereview</groupId>
  <artifactId>ai-code-review-platform</artifactId>
  <version>1.0.0</version>
+ <relativePath>../pom.xml</relativePath>
 </parent>
 
 <artifactId>code-analysis-service</artifactId>
@@ -17,9 +18,23 @@
 
  <dependency>
   <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter</artifactId>
+  <artifactId>spring-boot-starter-web</artifactId>
+ </dependency>
+
+ <dependency>
+  <groupId>com.ai.codereview</groupId>
+  <artifactId>common</artifactId>
  </dependency>
 
 </dependencies>
+
+<build>
+ <plugins>
+  <plugin>
+   <groupId>org.springframework.boot</groupId>
+   <artifactId>spring-boot-maven-plugin</artifactId>
+  </plugin>
+ </plugins>
+</build>
 
 </project>

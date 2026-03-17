@@ -63,7 +63,12 @@
     <!-- Dependency Management -->
     <dependencyManagement>
         <dependencies>
-
+            <dependency>
+                <groupId>com.ai.codereview</groupId>
+                <artifactId>common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        
             <!-- Spring Boot BOM -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
