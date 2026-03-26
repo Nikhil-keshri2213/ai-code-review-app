@@ -13,7 +13,6 @@
     <name>AI Code Review Platform</name>
     <description>Microservices based AI Code Review System</description>
 
-    <!-- Spring Boot Parent -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -21,19 +20,16 @@
         <relativePath/>
     </parent>
 
-    <!-- Properties -->
     <properties>
         <java.version>21</java.version>
         <spring-cloud.version>2023.0.2</spring-cloud.version>
         <spring-ai.version>1.0.0-M4</spring-ai.version>
-
-        <!-- <kafka.version>3.7.0</kafka.version> -->
         <lombok.version>1.18.34</lombok.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <jackson.version>2.17.1</jackson.version>
+        <flyway.version>10.15.0</flyway.version>
     </properties>
 
-    <!-- Modules -->
     <modules>
         <module>api-gateway</module>
         <module>webhook-service</module>
@@ -45,14 +41,12 @@
         <module>common</module>
     </modules>
 
-    <!-- Repositories -->
     <repositories>
         <repository>
             <id>spring-milestones</id>
             <name>Spring Milestones</name>
             <url>https://repo.spring.io/milestone</url>
         </repository>
-
         <repository>
             <id>spring-snapshots</id>
             <name>Spring Snapshots</name>
@@ -60,15 +54,16 @@
         </repository>
     </repositories>
 
-    <!-- Dependency Management -->
     <dependencyManagement>
         <dependencies>
+
+            <!-- Common module -->
             <dependency>
                 <groupId>com.ai.codereview</groupId>
                 <artifactId>common</artifactId>
                 <version>${project.version}</version>
             </dependency>
-        
+
             <!-- Spring Boot BOM -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -103,6 +98,18 @@
                 <version>3.1.4</version>
             </dependency>
 
+            <!-- Flyway -->
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-database-postgresql</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+
             <!-- Spring Data JPA -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -134,16 +141,13 @@
         </dependencies>
     </dependencyManagement>
 
-    <!-- Build Plugins -->
     <build>
         <pluginManagement>
             <plugins>
-
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                 </plugin>
-
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -152,8 +156,8 @@
                         <target>${java.version}</target>
                     </configuration>
                 </plugin>
-
             </plugins>
         </pluginManagement>
     </build>
+
 </project>
