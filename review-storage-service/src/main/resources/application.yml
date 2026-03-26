@@ -4,3 +4,12 @@ server:
 spring:
   application:
     name: review-storage-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/codereview
+    username: codereview
+    password: secret
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
