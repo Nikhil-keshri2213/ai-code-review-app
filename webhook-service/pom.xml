@@ -34,11 +34,18 @@
   <artifactId>common</artifactId>
  </dependency>
 
+<!-- Kafka -->
  <dependency>
     <groupId>org.springframework.kafka</groupId>
     <artifactId>spring-kafka</artifactId>
 </dependency>
 
+<!-- Lombok (optional, for reducing boilerplate code) -->
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <optional>true</optional>
+</dependency>
 </dependencies>
 
 <build>

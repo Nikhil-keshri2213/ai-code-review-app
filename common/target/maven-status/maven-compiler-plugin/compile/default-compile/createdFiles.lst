@@ -1,3 +1,8 @@
 com\aicodereview\common\dto\PullRequestEvent.class
+com\aicodereview\common\dto\PullRequestEvent$PullRequestDetail.class
 com\aicodereview\common\dto\ReviewResult.class
+com\aicodereview\common\dto\PullRequestEvent$BranchInfo.class
+com\aicodereview\common\dto\PullRequestEvent$Repository.class
+com\aicodereview\common\dto\PullRequestEvent$Sender.class
+com\aicodereview\common\dto\PullRequestEvent$PullRequestEventBuilder.class
 com\aicodereview\common\dto\ReviewRequest.class

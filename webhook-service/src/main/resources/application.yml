@@ -14,3 +14,11 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "com.aicodereview.*"
+
+github:
+  webhook:
+    secret: my-webhook-secret
+
+logging:
+  level:
+    com.ai.codereview: DEBUG

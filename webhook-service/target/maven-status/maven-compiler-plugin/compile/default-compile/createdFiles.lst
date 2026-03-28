@@ -1,2 +1,6 @@
-com\aicodereview\webhook\controller\WebhookController.class
 com\aicodereview\webhook\WebhookServiceApplication.class
+com\aicodereview\webhook\security\GitHubSignatureValidator.class
+com\aicodereview\webhook\exception\GlobalExceptionHandler.class
+com\aicodereview\webhook\service\WebhookService.class
+com\aicodereview\webhook\controller\WebhookController.class
+com\aicodereview\webhook\exception\InvalidSignatureException.class
