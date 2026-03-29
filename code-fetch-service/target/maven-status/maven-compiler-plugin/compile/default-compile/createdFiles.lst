@@ -1,2 +1,5 @@
+com\aicodereview\fetch\config\KafkaConsumerConfig.class
+com\aicodereview\fetch\consumer\PullRequestEventConsumer.class
 com\aicodereview\fetch\controller\FetchController.class
 com\aicodereview\fetch\CodeFetchServiceApplication.class
+com\aicodereview\fetch\config\KafkaTopicConfig.class

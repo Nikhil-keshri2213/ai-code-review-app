@@ -11,6 +11,8 @@ import lombok.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PullRequestEvent {
 
+    private String correlationId;
+    
     private String action;
 
     @JsonProperty("number")

@@ -43,7 +43,10 @@ public class WebhookService {
                         event.getAction(), PROCESSABLE_ACTIONS);
                 return;
             }
-
+            
+            // inside handlePullRequestEvent(), after parsing the event
+            event.setCorrelationId(java.util.UUID.randomUUID().toString());
+            
             publishToKafka(event);
 
         } catch (Exception e) {
