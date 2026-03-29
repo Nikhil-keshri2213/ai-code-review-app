@@ -9,16 +9,21 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    consumer:
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "com.aicodereview.*"
+        spring.json.add.type.headers: false
 
 github:
   webhook:
     secret: my-webhook-secret
 
+kafka:
+  topics:
+    pr-events: pr-events
+    code-analysis-tasks: code-analysis-tasks
+    review-tasks: review-tasks
+    review-results: review-results
+
 logging:
   level:
     com.ai.codereview: DEBUG
+    org.springframework.kafka: INFO
