@@ -1,11 +1,12 @@
-com\aicodereview\fetch\config\KafkaConsumerConfig.class
 com\aicodereview\fetch\consumer\PullRequestEventConsumer.class
 com\aicodereview\fetch\controller\FetchController.class
-com\aicodereview\fetch\CodeFetchServiceApplication.class
 com\aicodereview\fetch\client\GitHubApiClient$1.class
-com\aicodereview\fetch\dto\GitHubPRFile$GitHubPRFileBuilder.class
 com\aicodereview\fetch\client\GitHubApiClient.class
-com\aicodereview\fetch\config\WebClientConfig.class
 com\aicodereview\fetch\dto\GitHubPRFile.class
+com\aicodereview\fetch\service\CodeFetchService.class
+com\aicodereview\fetch\config\KafkaConsumerConfig.class
+com\aicodereview\fetch\CodeFetchServiceApplication.class
+com\aicodereview\fetch\dto\GitHubPRFile$GitHubPRFileBuilder.class
+com\aicodereview\fetch\config\WebClientConfig.class
 com\aicodereview\fetch\config\KafkaTopicConfig.class
 com\aicodereview\fetch\client\GitHubApiClient$2.class

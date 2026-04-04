@@ -22,4 +22,6 @@ public class ReviewRequest {
     private String language;
     private String headSha;
     private String senderLogin;
+
+    private String correlationId;
 }
