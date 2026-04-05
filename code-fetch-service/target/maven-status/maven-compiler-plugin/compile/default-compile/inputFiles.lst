@@ -5,5 +5,9 @@ D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\jav
 D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\java\com\aicodereview\fetch\config\WebClientConfig.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\java\com\aicodereview\fetch\consumer\PullRequestEventConsumer.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\java\com\aicodereview\fetch\controller\FetchController.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\java\com\aicodereview\fetch\dto\DiffHunk.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\java\com\aicodereview\fetch\dto\DiffLine.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\java\com\aicodereview\fetch\dto\DiffResult.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\java\com\aicodereview\fetch\dto\GitHubPRFile.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\java\com\aicodereview\fetch\service\CodeFetchService.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\java\com\aicodereview\fetch\util\DiffParser.java

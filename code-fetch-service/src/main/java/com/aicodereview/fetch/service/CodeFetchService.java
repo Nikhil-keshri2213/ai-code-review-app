@@ -1,7 +1,9 @@
 package com.aicodereview.fetch.service;
 
 import com.aicodereview.fetch.client.GitHubApiClient;
+import com.aicodereview.fetch.dto.DiffResult;
 import com.aicodereview.fetch.dto.GitHubPRFile;
+import com.aicodereview.fetch.util.DiffParser;
 import com.aicodereview.common.dto.PullRequestEvent;
 import com.aicodereview.common.dto.ReviewRequest;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +81,17 @@ public class CodeFetchService {
                 event.getHeadSha()
         );
 
+        // Parse the diff patch into structured format
+        DiffResult diffResult = DiffParser.parse(file.getPatch(), file.getFilename());
+        String parsedDiff = DiffParser.extractChangedCode(diffResult);
+
+        log.info("Parsed diff for {} — +{} lines, -{} lines, {} hunks",
+                file.getFilename(),
+                diffResult.getTotalAdditions(),
+                diffResult.getTotalDeletions(),
+                diffResult.getHunks().size()
+        );
+
         return ReviewRequest.builder()
                 .requestId(UUID.randomUUID())
                 .correlationId(event.getCorrelationId())
@@ -86,12 +99,12 @@ public class CodeFetchService {
                 .prNumber(event.getPrNumber())
                 .fileName(file.getFilename())
                 .fileContent(fileContent)
-                .diffContent(file.getPatch())
+                .diffContent(parsedDiff)
                 .language(file.detectLanguage())
                 .headSha(event.getHeadSha())
                 .senderLogin(event.getSenderLogin())
                 .build();
-    }
+        }
 
     private void publishToKafka(ReviewRequest request) {
         CompletableFuture<SendResult<String, Object>> future =
