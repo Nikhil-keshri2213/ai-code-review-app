@@ -3,6 +3,7 @@ package com.aicodereview.fetch.service;
 import com.aicodereview.fetch.client.GitHubApiClient;
 import com.aicodereview.fetch.dto.DiffResult;
 import com.aicodereview.fetch.dto.GitHubPRFile;
+import com.aicodereview.fetch.util.CodeChunker;
 import com.aicodereview.fetch.util.DiffParser;
 import com.aicodereview.common.dto.PullRequestEvent;
 import com.aicodereview.common.dto.ReviewRequest;
@@ -39,7 +40,6 @@ public class CodeFetchService {
         log.info("Starting file fetch — repo: {}, PR#: {}, correlationId: {}",
                 event.getRepoFullName(), event.getPrNumber(), event.getCorrelationId());
 
-        // Step 1 — fetch changed files from GitHub
         List<GitHubPRFile> files = gitHubApiClient
                 .getPullRequestFiles(event.getRepoFullName(), event.getPrNumber());
 
@@ -51,7 +51,6 @@ public class CodeFetchService {
 
         log.info("Fetched {} total files for PR#{}", files.size(), event.getPrNumber());
 
-        // Step 2 — filter to processable files
         List<GitHubPRFile> processableFiles = files.stream()
                 .filter(GitHubPRFile::isModifiedOrAdded)
                 .filter(f -> !isBinaryFile(f.getFilename()))
@@ -61,11 +60,9 @@ public class CodeFetchService {
                 processableFiles.size(), files.size(),
                 files.size() - processableFiles.size());
 
-        // Step 3 — build and publish ReviewRequest per file
         for (GitHubPRFile file : processableFiles) {
             try {
-                ReviewRequest request = buildReviewRequest(event, file);
-                publishToKafka(request);
+                processFile(event, file);
             } catch (Exception e) {
                 log.error("Failed to process file: {} — error: {}",
                         file.getFilename(), e.getMessage());
@@ -73,15 +70,13 @@ public class CodeFetchService {
         }
     }
 
-    private ReviewRequest buildReviewRequest(PullRequestEvent event, GitHubPRFile file) {
-        // Fetch full file content
+    private void processFile(PullRequestEvent event, GitHubPRFile file) {
         String fileContent = gitHubApiClient.getFileContent(
                 event.getRepoFullName(),
                 file.getFilename(),
                 event.getHeadSha()
         );
 
-        // Parse the diff patch into structured format
         DiffResult diffResult = DiffParser.parse(file.getPatch(), file.getFilename());
         String parsedDiff = DiffParser.extractChangedCode(diffResult);
 
@@ -89,9 +84,35 @@ public class CodeFetchService {
                 file.getFilename(),
                 diffResult.getTotalAdditions(),
                 diffResult.getTotalDeletions(),
-                diffResult.getHunks().size()
-        );
+                diffResult.getHunks().size());
 
+        if (CodeChunker.needsChunking(fileContent)) {
+            publishWithChunking(event, file, fileContent, parsedDiff);
+        } else {
+            ReviewRequest request = buildReviewRequest(
+                    event, file, fileContent, parsedDiff, 0, 1, false);
+            publishToKafka(request);
+        }
+    }
+
+    private void publishWithChunking(PullRequestEvent event, GitHubPRFile file,
+                                      String fileContent, String parsedDiff) {
+        List<String> chunks = CodeChunker.chunk(fileContent);
+        int totalChunks = chunks.size();
+
+        log.info("File {} is large — splitting into {} chunks", file.getFilename(), totalChunks);
+
+        for (int i = 0; i < totalChunks; i++) {
+            ReviewRequest request = buildReviewRequest(
+                    event, file, chunks.get(i), parsedDiff, i, totalChunks, true);
+            publishToKafka(request);
+        }
+    }
+
+    private ReviewRequest buildReviewRequest(PullRequestEvent event, GitHubPRFile file,
+                                              String fileContent, String diffContent,
+                                              int chunkIndex, int totalChunks,
+                                              boolean isChunked) {
         return ReviewRequest.builder()
                 .requestId(UUID.randomUUID())
                 .correlationId(event.getCorrelationId())
@@ -99,32 +120,41 @@ public class CodeFetchService {
                 .prNumber(event.getPrNumber())
                 .fileName(file.getFilename())
                 .fileContent(fileContent)
-                .diffContent(parsedDiff)
+                .diffContent(diffContent)
                 .language(file.detectLanguage())
                 .headSha(event.getHeadSha())
                 .senderLogin(event.getSenderLogin())
+                .chunkIndex(chunkIndex)
+                .totalChunks(totalChunks)
+                .isChunked(isChunked)
                 .build();
-        }
+    }
 
     private void publishToKafka(ReviewRequest request) {
+        String messageKey = request.isChunked()
+                ? request.getFileName() + "-chunk-" + request.getChunkIndex()
+                : request.getFileName();
+
         CompletableFuture<SendResult<String, Object>> future =
-                kafkaTemplate.send(
-                        codeAnalysisTasksTopic,
-                        request.getFileName(),
-                        request
-                );
+                kafkaTemplate.send(codeAnalysisTasksTopic, messageKey, request);
 
         future.whenComplete((result, ex) -> {
             if (ex == null) {
-                log.info("Published ReviewRequest — file: {}, topic: {}, partition: {}, offset: {}",
+                log.info("Published ReviewRequest — file: {} chunk: {}/{}, " +
+                                "topic: {}, partition: {}, offset: {}",
                         request.getFileName(),
+                        request.getChunkIndex() + 1,
+                        request.getTotalChunks(),
                         result.getRecordMetadata().topic(),
                         result.getRecordMetadata().partition(),
                         result.getRecordMetadata().offset()
                 );
             } else {
-                log.error("Failed to publish ReviewRequest for file: {} — error: {}",
-                        request.getFileName(), ex.getMessage());
+                log.error("Failed to publish ReviewRequest for file: {} chunk: {}/{} — error: {}",
+                        request.getFileName(),
+                        request.getChunkIndex() + 1,
+                        request.getTotalChunks(),
+                        ex.getMessage());
             }
         });
     }

@@ -4,6 +4,7 @@ com\aicodereview\fetch\client\GitHubApiClient$1.class
 com\aicodereview\fetch\client\GitHubApiClient.class
 com\aicodereview\fetch\dto\GitHubPRFile.class
 com\aicodereview\fetch\service\CodeFetchService.class
+com\aicodereview\fetch\util\CodeChunker.class
 com\aicodereview\fetch\util\DiffParser$1.class
 com\aicodereview\fetch\util\DiffParser.class
 com\aicodereview\fetch\dto\DiffHunk.class

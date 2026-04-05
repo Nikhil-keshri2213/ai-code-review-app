@@ -24,4 +24,13 @@ public class ReviewRequest {
     private String senderLogin;
 
     private String correlationId;
+
+    @Builder.Default
+    private int chunkIndex = 0;
+
+    @Builder.Default
+    private int totalChunks = 1;
+
+    @Builder.Default
+    private boolean isChunked = false;
 }
