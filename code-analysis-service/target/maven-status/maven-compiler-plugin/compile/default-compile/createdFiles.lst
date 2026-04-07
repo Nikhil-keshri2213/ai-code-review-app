@@ -1,2 +1,7 @@
-com\aicodereview\analysis\controller\AnalysisController.class
 com\aicodereview\analysis\CodeAnalysisServiceApplication.class
+com\aicodereview\analysis\controller\AnalysisController.class
+com\aicodereview\analysis\config\KafkaProducerConfig.class
+com\aicodereview\analysis\config\KafkaConsumerConfig.class
+com\aicodereview\analysis\service\CodeAnalysisService.class
+com\aicodereview\analysis\consumer\ReviewRequestConsumer.class
+com\aicodereview\analysis\config\KafkaTopicConfig.class

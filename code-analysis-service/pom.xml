@@ -1,45 +1,51 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
- http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-<parent>
- <groupId>com.ai.codereview</groupId>
- <artifactId>ai-code-review-platform</artifactId>
- <version>1.0.0</version>
- <relativePath>../pom.xml</relativePath>
-</parent>
+    <parent>
+        <groupId>com.ai.codereview</groupId>
+        <artifactId>ai-code-review-platform</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-<artifactId>code-analysis-service</artifactId>
+    <artifactId>code-analysis-service</artifactId>
 
-<dependencies>
+    <dependencies>
 
- <dependency>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-starter-web</artifactId>
- </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
 
- <dependency>
-  <groupId>com.ai.codereview</groupId>
-  <artifactId>common</artifactId>
- </dependency>
- 
- <dependency>
-    <groupId>org.springframework.kafka</groupId>
-    <artifactId>spring-kafka</artifactId>
-</dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
 
-</dependencies>
+        <dependency>
+            <groupId>com.ai.codereview</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
 
-<build>
- <plugins>
-  <plugin>
-   <groupId>org.springframework.boot</groupId>
-   <artifactId>spring-boot-maven-plugin</artifactId>
-  </plugin>
- </plugins>
-</build>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
