@@ -5,6 +5,7 @@ com\aicodereview\common\dto\PullRequestEvent$Sender.class
 com\aicodereview\common\enums\Severity.class
 com\aicodereview\common\dto\ReviewRequest.class
 com\aicodereview\common\dto\ApiErrorResponse$ApiErrorResponseBuilder.class
+com\aicodereview\common\dto\ReviewComment.class
 com\aicodereview\common\config\JacksonConfig.class
 com\aicodereview\common\dto\ApiErrorResponse.class
 com\aicodereview\common\dto\ReviewRequest$ReviewRequestBuilder.class
@@ -14,4 +15,5 @@ com\aicodereview\common\dto\PullRequestEvent$PullRequestDetail.class
 com\aicodereview\common\dto\ReviewResult.class
 com\aicodereview\common\dto\ApiResponse$ApiResponseBuilder.class
 com\aicodereview\common\dto\PullRequestEvent$Repository.class
+com\aicodereview\common\dto\ReviewComment$ReviewCommentBuilder.class
 com\aicodereview\common\dto\PullRequestEvent$PullRequestEventBuilder.class

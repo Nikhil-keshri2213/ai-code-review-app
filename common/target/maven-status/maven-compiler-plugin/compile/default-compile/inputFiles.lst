@@ -2,6 +2,7 @@ D:\Programming\Ai_Code_Review\ai-code-review-app\common\src\main\java\com\aicode
 D:\Programming\Ai_Code_Review\ai-code-review-app\common\src\main\java\com\aicodereview\common\dto\ApiErrorResponse.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\common\src\main\java\com\aicodereview\common\dto\ApiResponse.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\common\src\main\java\com\aicodereview\common\dto\PullRequestEvent.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\common\src\main\java\com\aicodereview\common\dto\ReviewComment.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\common\src\main\java\com\aicodereview\common\dto\ReviewRequest.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\common\src\main\java\com\aicodereview\common\dto\ReviewResult.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\common\src\main\java\com\aicodereview\common\enums\ReviewCategory.java

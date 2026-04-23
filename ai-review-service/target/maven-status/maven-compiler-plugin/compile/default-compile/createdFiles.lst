@@ -1,6 +1,7 @@
 com\aicodereview\review\service\AIReviewService.class
 com\aicodereview\review\config\KafkaTopicConfig.class
 com\aicodereview\review\config\KafkaConsumerConfig.class
+com\aicodereview\review\service\PromptTemplateService.class
 com\aicodereview\review\client\OpenAIClient.class
 com\aicodereview\review\controller\ReviewController.class
 com\aicodereview\review\AiReviewServiceApplication.class
