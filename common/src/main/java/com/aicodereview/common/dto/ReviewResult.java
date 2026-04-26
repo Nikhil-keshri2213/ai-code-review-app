@@ -27,6 +27,8 @@ public class ReviewResult {
     private Integer lineNumber;
     private String suggestion;
 
+    private String llmProvider;
+
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 }

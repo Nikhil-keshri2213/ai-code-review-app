@@ -93,7 +93,8 @@ public class LLMService {
 
         try {
             return objectMapper.readValue(cleaned,
-                    new TypeReference<List<ReviewComment>>() {});
+                    new TypeReference<List<ReviewComment>>() {
+                    });
         } catch (Exception e) {
             log.warn("Failed to parse LLM JSON response: {} — raw: {}",
                     e.getMessage(), cleaned.substring(0, Math.min(200, cleaned.length())));
@@ -101,9 +102,34 @@ public class LLMService {
         }
     }
 
-    // ── Map ReviewComment → ReviewResult ──
+    // // ── Map ReviewComment → ReviewResult ──
+    // private List<ReviewResult> mapToResults(List<ReviewComment> comments,
+    // ReviewRequest request) {
+    // List<ReviewResult> results = new ArrayList<>();
+    // for (ReviewComment comment : comments) {
+    // results.add(ReviewResult.builder()
+    // .resultId(UUID.randomUUID())
+    // .requestId(request.getRequestId())
+    // .repoFullName(request.getRepoFullName())
+    // .prNumber(request.getPrNumber())
+    // .fileName(comment.getFileName() != null
+    // ? comment.getFileName()
+    // : request.getFileName())
+    // .comment(comment.getComment())
+    // .severity(parseSeverity(comment.getSeverity()))
+    // .category(parseCategory(comment.getCategory()))
+    // .lineNumber(comment.getLineNumber())
+    // .suggestion(comment.getSuggestion())
+    // .createdAt(LocalDateTime.now())
+    // .build());
+    // }
+    // return results;
+    // }
+
+    // In mapToResults() — add .llmProvider(openAIClient.getProviderName()) to
+    // builder
     private List<ReviewResult> mapToResults(List<ReviewComment> comments,
-                                             ReviewRequest request) {
+            ReviewRequest request) {
         List<ReviewResult> results = new ArrayList<>();
         for (ReviewComment comment : comments) {
             results.add(ReviewResult.builder()
@@ -119,6 +145,7 @@ public class LLMService {
                     .category(parseCategory(comment.getCategory()))
                     .lineNumber(comment.getLineNumber())
                     .suggestion(comment.getSuggestion())
+                    .llmProvider(openAIClient.getProviderName())
                     .createdAt(LocalDateTime.now())
                     .build());
         }
@@ -126,7 +153,8 @@ public class LLMService {
     }
 
     private Severity parseSeverity(String s) {
-        if (s == null) return Severity.LOW;
+        if (s == null)
+            return Severity.LOW;
         try {
             return Severity.valueOf(s.toUpperCase().trim());
         } catch (Exception e) {
@@ -135,13 +163,29 @@ public class LLMService {
     }
 
     private ReviewCategory parseCategory(String c) {
-        if (c == null) return ReviewCategory.OTHER;
+        if (c == null)
+            return ReviewCategory.OTHER;
         try {
             return ReviewCategory.valueOf(c.toUpperCase().trim());
         } catch (Exception e) {
             return ReviewCategory.OTHER;
         }
     }
+
+    // private ReviewResult buildNoIssuesResult(ReviewRequest request) {
+    // return ReviewResult.builder()
+    // .resultId(UUID.randomUUID())
+    // .requestId(request.getRequestId())
+    // .repoFullName(request.getRepoFullName())
+    // .prNumber(request.getPrNumber())
+    // .fileName(request.getFileName())
+    // .comment("No issues found in this file")
+    // .severity(Severity.LOW)
+    // .category(ReviewCategory.OTHER)
+    // .suggestion("Code looks good!")
+    // .createdAt(LocalDateTime.now())
+    // .build();
+    // }
 
     private ReviewResult buildNoIssuesResult(ReviewRequest request) {
         return ReviewResult.builder()
@@ -154,9 +198,24 @@ public class LLMService {
                 .severity(Severity.LOW)
                 .category(ReviewCategory.OTHER)
                 .suggestion("Code looks good!")
+                .llmProvider(openAIClient.getProviderName())
                 .createdAt(LocalDateTime.now())
                 .build();
     }
+
+    // private ReviewResult buildErrorResult(ReviewRequest request, String error) {
+    // return ReviewResult.builder()
+    // .resultId(UUID.randomUUID())
+    // .requestId(request.getRequestId())
+    // .repoFullName(request.getRepoFullName())
+    // .prNumber(request.getPrNumber())
+    // .fileName(request.getFileName())
+    // .comment("Review failed: " + error)
+    // .severity(Severity.LOW)
+    // .category(ReviewCategory.OTHER)
+    // .createdAt(LocalDateTime.now())
+    // .build();
+    // }
 
     private ReviewResult buildErrorResult(ReviewRequest request, String error) {
         return ReviewResult.builder()
@@ -168,6 +227,7 @@ public class LLMService {
                 .comment("Review failed: " + error)
                 .severity(Severity.LOW)
                 .category(ReviewCategory.OTHER)
+                .llmProvider(openAIClient.getProviderName())
                 .createdAt(LocalDateTime.now())
                 .build();
     }

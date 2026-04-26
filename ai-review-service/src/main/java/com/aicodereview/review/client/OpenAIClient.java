@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,20 +15,34 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class OpenAIClient {
 
-    private static final MediaType JSON_TYPE =
-            MediaType.get("application/json; charset=utf-8");
+    private static final MediaType JSON_TYPE = MediaType.get("application/json; charset=utf-8");
 
     private final OkHttpClient http;
     private final ObjectMapper mapper;
 
-    @Value("${openai.api-key}")
-    private String apiKey;
+    @Value("${ai.provider}")
+    private String activeProvider;
 
-    @Value("${openai.model:llama-3.3-70b-versatile}")
-    private String model;
+    @Value("${ai.providers.groq.base-url}")
+    private String groqBaseUrl;
+    @Value("${ai.providers.groq.api-key}")
+    private String groqApiKey;
+    @Value("${ai.providers.groq.model}")
+    private String groqModel;
 
-    @Value("${openai.base-url:https://api.groq.com/openai/v1}")
-    private String baseUrl;
+    @Value("${ai.providers.openai.base-url}")
+    private String openaiBaseUrl;
+    @Value("${ai.providers.openai.api-key}")
+    private String openaiApiKey;
+    @Value("${ai.providers.openai.model}")
+    private String openaiModel;
+
+    @Value("${ai.providers.ollama.base-url}")
+    private String ollamaBaseUrl;
+    @Value("${ai.providers.ollama.api-key}")
+    private String ollamaApiKey;
+    @Value("${ai.providers.ollama.model}")
+    private String ollamaModel;
 
     public OpenAIClient() {
         this.http = new OkHttpClient.Builder()
@@ -40,21 +53,40 @@ public class OpenAIClient {
         this.mapper = new ObjectMapper();
     }
 
-    @PostConstruct
-    public void init() {
-        log.info("========================================");
-        log.info("AI Client Configuration");
-        log.info("Base URL: {}", baseUrl);
-        log.info("Model: {}", model);
-        log.info("API Key present: {}", apiKey != null && !apiKey.isBlank());
-        log.info("API Key prefix: {}",
-                apiKey != null && apiKey.length() > 7
-                        ? apiKey.substring(0, 7) + "..."
-                        : "MISSING");
-        log.info("========================================");
+    public String getProviderName() {
+        return activeProvider;
+    }
+
+    private String getBaseUrl() {
+        return switch (activeProvider.toLowerCase()) {
+            case "openai" -> openaiBaseUrl;
+            case "ollama" -> ollamaBaseUrl;
+            default -> groqBaseUrl;
+        };
+    }
+
+    private String getApiKey() {
+        return switch (activeProvider.toLowerCase()) {
+            case "openai" -> openaiApiKey;
+            case "ollama" -> ollamaApiKey;
+            default -> groqApiKey;
+        };
+    }
+
+    private String getModel() {
+        return switch (activeProvider.toLowerCase()) {
+            case "openai" -> openaiModel;
+            case "ollama" -> ollamaModel;
+            default -> groqModel;
+        };
     }
 
     public String chat(String systemPrompt, String userPrompt) {
+        String url = getBaseUrl() + "/chat/completions";
+        String model = getModel();
+
+        log.info("Calling AI provider: {} model: {}", activeProvider, model);
+
         try {
             ObjectNode body = mapper.createObjectNode();
             body.put("model", model);
@@ -65,41 +97,30 @@ public class OpenAIClient {
             messages.addObject().put("role", "system").put("content", systemPrompt);
             messages.addObject().put("role", "user").put("content", userPrompt);
 
-            String requestBody = mapper.writeValueAsString(body);
-            String fullUrl = baseUrl + "/chat/completions";
-
-            log.info("Calling AI endpoint: {}", fullUrl);
-            log.debug("Request body: {}", requestBody);
-
             Request request = new Request.Builder()
-                    .url(fullUrl)
-                    .header("Authorization", "Bearer " + apiKey)
+                    .url(url)
+                    .header("Authorization", "Bearer " + getApiKey())
                     .header("Content-Type", "application/json")
-                    .post(RequestBody.create(requestBody, JSON_TYPE))
+                    .post(RequestBody.create(mapper.writeValueAsString(body), JSON_TYPE))
                     .build();
 
             try (Response response = http.newCall(request).execute()) {
-                String responseBody = response.body() != null
-                        ? response.body().string()
-                        : "";
-
-                log.info("AI response status: {}", response.code());
-
+                String responseBody = response.body().string();
                 if (!response.isSuccessful()) {
-                    log.error("AI API error — status: {}, body: {}",
-                            response.code(), responseBody);
-                    throw new RuntimeException("AI error " + response.code()
+                    log.error("AI API error — provider: {}, status: {}, body: {}",
+                            activeProvider, response.code(), responseBody);
+                    throw new RuntimeException("AI API error " + response.code()
                             + ": " + responseBody);
                 }
-
-                log.debug("AI response body: {}", responseBody);
+                log.info("AI response status: {}", response.code());
                 JsonNode json = mapper.readTree(responseBody);
                 return json.path("choices").get(0)
                         .path("message").path("content").asText();
             }
         } catch (Exception e) {
-            log.error("AI call failed: {}", e.getMessage(), e);
-            throw new RuntimeException("AI call failed: " + e.getMessage(), e);
+            log.error("AI call failed — provider: {}, error: {}",
+                    activeProvider, e.getMessage());
+            throw new RuntimeException("AI call failed", e);
         }
     }
 }
