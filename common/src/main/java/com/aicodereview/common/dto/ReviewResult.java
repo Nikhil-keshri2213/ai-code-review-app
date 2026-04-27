@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewResult {
@@ -28,6 +28,8 @@ public class ReviewResult {
     private String suggestion;
 
     private String llmProvider;
+
+    private Double confidenceScore;
 
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
