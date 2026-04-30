@@ -1,10 +1,13 @@
 com\aicodereview\storage\config\KafkaConsumerConfig.class
-com\aicodereview\storage\dto\ReviewResponse.class
+com\aicodereview\storage\dto\ReviewSummaryDTO$ReviewSummaryDTOBuilder.class
+com\aicodereview\storage\dto\ReviewSummaryDTO.class
 com\aicodereview\storage\entity\Review.class
 com\aicodereview\storage\repository\ReviewRepository.class
-com\aicodereview\storage\dto\ReviewResponse$ReviewResponseBuilder.class
+com\aicodereview\storage\controller\ReviewController.class
 com\aicodereview\storage\controller\StorageController.class
+com\aicodereview\storage\dto\ReviewResponseDTO$ReviewResponseDTOBuilder.class
 com\aicodereview\storage\entity\Review$ReviewBuilder.class
 com\aicodereview\storage\service\ReviewStorageService.class
+com\aicodereview\storage\dto\ReviewResponseDTO.class
 com\aicodereview\storage\ReviewStorageServiceApplication.class
 com\aicodereview\storage\consumer\ReviewResultConsumer.class

@@ -55,8 +55,8 @@ public class Review {
     @Column(name = "llm_provider")
     private String llmProvider;
 
-    @Column(name = "confidence_score", precision = 3, scale = 2)
-    private BigDecimal confidenceScore;
+    @Column(name = "confidence_score")
+    private Double confidenceScore;
 
     @Column(nullable = false)
     @Builder.Default

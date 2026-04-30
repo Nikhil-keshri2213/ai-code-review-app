@@ -1,0 +1,3 @@
+
+ALTER TABLE reviews 
+ALTER COLUMN confidence_score TYPE DOUBLE PRECISION;
