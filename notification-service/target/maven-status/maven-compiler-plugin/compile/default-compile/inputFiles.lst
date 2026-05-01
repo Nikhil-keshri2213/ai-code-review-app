@@ -5,3 +5,4 @@ D:\Programming\Ai_Code_Review\ai-code-review-app\notification-service\src\main\j
 D:\Programming\Ai_Code_Review\ai-code-review-app\notification-service\src\main\java\com\aicodereview\notification\dto\GitHubCommentRequest.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\notification-service\src\main\java\com\aicodereview\notification\NotificationServiceApplication.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\notification-service\src\main\java\com\aicodereview\notification\service\GitHubNotificationService.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\notification-service\src\main\java\com\aicodereview\notification\service\SlackNotificationService.java

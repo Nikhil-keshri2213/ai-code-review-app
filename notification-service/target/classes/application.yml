@@ -20,3 +20,7 @@ github:
   token: ${GITHUB_TOKEN}
   api:
     base-url: https://api.github.com
+
+slack:
+  webhook:
+    url: ${SLACK_WEBHOOK_URL}

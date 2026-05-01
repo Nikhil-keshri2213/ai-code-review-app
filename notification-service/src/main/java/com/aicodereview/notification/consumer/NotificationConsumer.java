@@ -2,6 +2,7 @@ package com.aicodereview.notification.consumer;
 
 import com.aicodereview.common.dto.ReviewResult;
 import com.aicodereview.notification.service.GitHubNotificationService;
+import com.aicodereview.notification.service.SlackNotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 public class NotificationConsumer {
 
     private final GitHubNotificationService gitHubNotificationService;
+    private final SlackNotificationService slackNotificationService;
 
     @KafkaListener(
             topics = "review-results",
@@ -21,6 +23,8 @@ public class NotificationConsumer {
     public void consume(ReviewResult result) {
         log.info("Consumed ReviewResult for PR#{} file: {}",
                 result.getPrNumber(), result.getFileName());
+
         gitHubNotificationService.postReviewComment(result);
+        slackNotificationService.sendReviewNotification(result);
     }
 }
