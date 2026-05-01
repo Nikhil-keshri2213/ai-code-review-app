@@ -30,6 +30,8 @@ public class ReviewResult {
 
     private Double confidenceScore;
 
+    private String commitSha;
+
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 }

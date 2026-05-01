@@ -1,2 +1,9 @@
-com\aicodereview\notification\NotificationServiceApplication.class
+com\aicodereview\notification\client\GitHubCommentClient.class
+com\aicodereview\notification\service\GitHubNotificationService$1.class
 com\aicodereview\notification\controller\NotificationController.class
+com\aicodereview\notification\service\GitHubNotificationService.class
+com\aicodereview\notification\dto\GitHubCommentRequest$GitHubCommentRequestBuilder.class
+com\aicodereview\notification\NotificationServiceApplication.class
+com\aicodereview\notification\config\KafkaConsumerConfig.class
+com\aicodereview\notification\consumer\NotificationConsumer.class
+com\aicodereview\notification\dto\GitHubCommentRequest.class
