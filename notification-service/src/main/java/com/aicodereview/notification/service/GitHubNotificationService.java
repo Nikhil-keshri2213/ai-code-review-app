@@ -1,15 +1,15 @@
 package com.aicodereview.notification.service;
 
 import com.aicodereview.common.dto.ReviewResult;
-import com.aicodereview.common.enums.Severity;
 import com.aicodereview.notification.client.GitHubCommentClient;
-import com.aicodereview.notification.dto.GitHubCommentRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
-
-import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -18,15 +18,17 @@ public class GitHubNotificationService {
 
     private final GitHubCommentClient gitHubCommentClient;
 
+    @Retryable(
+        retryFor = Exception.class,
+        maxAttempts = 3,
+        backoff = @Backoff(delay = 2000, multiplier = 2)
+    )
     public void postReviewComment(ReviewResult result) {
-    try {
         String[] parts = result.getRepoFullName().split("/");
         String owner = parts[0];
         String repo  = parts[1];
 
         String body = formatComment(result);
-
-        // Use Issue Comments API — simpler, no commitSha or line needed
         Map<String, String> request = Map.of("body", body);
 
         gitHubCommentClient.getClient()
@@ -40,12 +42,13 @@ public class GitHubNotificationService {
 
         log.info("✅ Posted GitHub comment for PR#{} file: {}",
                 result.getPrNumber(), result.getFileName());
+    }
 
-    } catch (Exception e) {
-        log.error("Failed to post GitHub comment for PR#{}: {}",
+    @Recover
+    public void recoverGitHub(Exception e, ReviewResult result) {
+        log.error("❌ GitHub comment permanently failed for PR#{} after 3 attempts: {}",
                 result.getPrNumber(), e.getMessage());
     }
-}
 
     private String formatComment(ReviewResult result) {
         String emoji = switch (result.getSeverity()) {
@@ -56,11 +59,11 @@ public class GitHubNotificationService {
 
         return String.format("""
                 %s — %s
-                
+
                 %s
-                
+
                 💡 **Suggestion:** %s
-                
+
                 *AI Code Review Bot · Confidence: %.0f%%*
                 """,
                 emoji,
