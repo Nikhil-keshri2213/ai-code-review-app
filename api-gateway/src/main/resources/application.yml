@@ -4,6 +4,12 @@ server:
 spring:
   application:
     name: api-gateway
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
   cloud:
     gateway:
       routes:
@@ -11,11 +17,23 @@ spring:
           uri: http://localhost:8081
           predicates:
             - Path=/webhook/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@ipKeyResolver}"
 
         - id: review-storage-service
           uri: http://localhost:8085
           predicates:
             - Path=/api/reviews/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@ipKeyResolver}"
 
         - id: review-storage-health
           uri: http://localhost:8085
@@ -34,6 +52,9 @@ spring:
               - OPTIONS
             allowedHeaders: "*"
 
+jwt:
+  secret: ${JWT_SECRET}
+
 management:
   endpoints:
     web:
@@ -44,6 +65,3 @@ logging:
   level:
     org.springframework.cloud.gateway: INFO
     com.ai.codereview: DEBUG
-
-jwt:
-  secret: ${JWT_SECRET}

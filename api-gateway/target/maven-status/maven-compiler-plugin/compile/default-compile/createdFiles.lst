@@ -1,3 +1,4 @@
+com\aicodereview\gateway\config\RateLimiterConfig.class
 com\aicodereview\gateway\controller\GatewayController.class
 com\aicodereview\gateway\filter\LoggingFilter.class
 com\aicodereview\gateway\controller\AuthController.class
