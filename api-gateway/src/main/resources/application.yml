@@ -44,3 +44,6 @@ logging:
   level:
     org.springframework.cloud.gateway: INFO
     com.ai.codereview: DEBUG
+
+jwt:
+  secret: ${JWT_SECRET}

@@ -1,4 +1,7 @@
 com\aicodereview\gateway\controller\GatewayController.class
-com\aicodereview\gateway\ApiGatewayApplication.class
 com\aicodereview\gateway\filter\LoggingFilter.class
+com\aicodereview\gateway\controller\AuthController.class
+com\aicodereview\gateway\filter\JwtAuthFilter.class
+com\aicodereview\gateway\ApiGatewayApplication.class
 com\aicodereview\gateway\config\GatewayConfig.class
+com\aicodereview\gateway\util\JwtUtil.class

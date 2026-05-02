@@ -1,4 +1,7 @@
 D:\Programming\Ai_Code_Review\ai-code-review-app\api-gateway\src\main\java\com\aicodereview\gateway\ApiGatewayApplication.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\api-gateway\src\main\java\com\aicodereview\gateway\config\GatewayConfig.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\api-gateway\src\main\java\com\aicodereview\gateway\controller\AuthController.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\api-gateway\src\main\java\com\aicodereview\gateway\controller\GatewayController.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\api-gateway\src\main\java\com\aicodereview\gateway\filter\JwtAuthFilter.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\api-gateway\src\main\java\com\aicodereview\gateway\filter\LoggingFilter.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\api-gateway\src\main\java\com\aicodereview\gateway\util\JwtUtil.java
