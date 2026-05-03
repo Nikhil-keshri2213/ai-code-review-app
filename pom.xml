@@ -31,6 +31,8 @@
     </properties>
 
     <modules>
+        <module>common</module>
+        <module>eureka-server</module>
         <module>api-gateway</module>
         <module>webhook-service</module>
         <module>code-fetch-service</module>
@@ -38,7 +40,6 @@
         <module>ai-review-service</module>
         <module>review-storage-service</module>
         <module>notification-service</module>
-        <module>common</module>
     </modules>
 
     <repositories>
@@ -143,6 +144,12 @@
                 <artifactId>spring-dotenv</artifactId>
                 <version>4.0.0</version>
             </dependency>
+            
+            <!-- Eureka Server
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            </dependency> -->
         </dependencies>
     </dependencyManagement>
 
