@@ -7,7 +7,9 @@ com\aicodereview\review\consumer\ReviewRequestConsumer.class
 com\aicodereview\review\service\SeverityScorer.class
 com\aicodereview\review\config\KafkaConsumerConfig.class
 com\aicodereview\review\service\PromptTemplateService.class
+com\aicodereview\review\config\WeaviateConfig.class
 com\aicodereview\review\controller\ReviewController.class
 com\aicodereview\review\AiReviewServiceApplication.class
 com\aicodereview\review\service\LLMService.class
 com\aicodereview\review\controller\AITestController.class
+com\aicodereview\review\service\EmbeddingService.class

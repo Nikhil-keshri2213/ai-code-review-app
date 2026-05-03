@@ -4,6 +4,7 @@ networks:
 
 volumes:
   postgres-data:
+  weaviate-data:
 
 services:
 
@@ -78,3 +79,20 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  weaviate:
+    image: semitechnologies/weaviate:1.24.1
+    container_name: ai-review-weaviate
+    ports:
+      - "8090:8080"
+    environment:
+      QUERY_DEFAULTS_LIMIT: 20
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
+      PERSISTENCE_DATA_PATH: /var/lib/weaviate
+      DEFAULT_VECTORIZER_MODULE: none
+      ENABLE_MODULES: ""
+      CLUSTER_HOSTNAME: node1
+    volumes:
+      - weaviate-data:/var/lib/weaviate
+    networks:
+      - ai-review-net

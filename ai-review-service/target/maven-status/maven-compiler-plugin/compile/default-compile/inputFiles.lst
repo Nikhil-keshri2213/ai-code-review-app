@@ -3,10 +3,12 @@ D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java
 D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\config\KafkaConsumerConfig.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\config\KafkaProducerConfig.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\config\KafkaTopicConfig.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\config\WeaviateConfig.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\consumer\ReviewRequestConsumer.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\controller\AITestController.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\controller\ReviewController.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\service\AIReviewService.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\service\EmbeddingService.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\service\LLMService.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\service\PromptTemplateService.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\service\SeverityScorer.java
