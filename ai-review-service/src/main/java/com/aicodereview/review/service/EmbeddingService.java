@@ -1,48 +1,41 @@
 package com.aicodereview.review.service;
 
-import com.theokanning.openai.embedding.EmbeddingRequest;
-import com.theokanning.openai.service.OpenAiService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.util.Arrays;
 
 @Slf4j
 @Service
 public class EmbeddingService {
 
-    private final OpenAiService openAiService;
-
-    public EmbeddingService(@Value("${openai.api.key}") String apiKey) {
-        this.openAiService = new OpenAiService(apiKey);
-    }
+    private static final int EMBEDDING_DIM = 1536;
 
     public float[] embedCode(String code) {
         try {
-            // Truncate to 8000 chars to stay within token limit
-            String truncated = code.length() > 8000
-                    ? code.substring(0, 8000)
-                    : code;
+            // Generate deterministic pseudo-embedding from content hash
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(code.getBytes(StandardCharsets.UTF_8));
 
-            EmbeddingRequest request = EmbeddingRequest.builder()
-                    .model("text-embedding-3-small")
-                    .input(List.of(truncated))
-                    .build();
-
-            var result = openAiService.createEmbeddings(request);
-            List<Double> embedding = result.getData().get(0).getEmbedding();
-
-            float[] floatArray = new float[embedding.size()];
-            for (int i = 0; i < embedding.size(); i++) {
-                floatArray[i] = embedding.get(i).floatValue();
+            float[] embedding = new float[EMBEDDING_DIM];
+            for (int i = 0; i < EMBEDDING_DIM; i++) {
+                // Spread hash bytes across embedding dimensions
+                embedding[i] = (float)(hash[i % hash.length] & 0xFF) / 255.0f - 0.5f;
             }
 
-            log.info("✅ Generated embedding of size: {}", floatArray.length);
-            return floatArray;
+            // Normalize
+            float norm = 0f;
+            for (float v : embedding) norm += v * v;
+            norm = (float) Math.sqrt(norm);
+            if (norm > 0) for (int i = 0; i < embedding.length; i++) embedding[i] /= norm;
+
+            log.info("***Generated hash embedding of size: {}", embedding.length);
+            return embedding;
 
         } catch (Exception e) {
-            log.error("Failed to generate embedding: {}", e.getMessage());
+            log.error("###Failed to generate embedding: {}", e.getMessage());
             return new float[0];
         }
     }

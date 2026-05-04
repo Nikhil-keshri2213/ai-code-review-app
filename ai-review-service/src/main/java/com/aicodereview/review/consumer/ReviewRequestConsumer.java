@@ -3,6 +3,7 @@ package com.aicodereview.review.consumer;
 import com.aicodereview.common.dto.ReviewRequest;
 import com.aicodereview.common.dto.ReviewResult;
 import com.aicodereview.review.service.AIReviewService;
+import com.aicodereview.review.service.RepoIndexerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,7 @@ import java.util.concurrent.CompletableFuture;
 public class ReviewRequestConsumer {
 
     private final AIReviewService aiReviewService;
+    private final RepoIndexerService repoIndexerService;
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Value("${kafka.topics.review-results}")
@@ -49,6 +51,10 @@ public class ReviewRequestConsumer {
                 request.getChunkIndex() + 1, request.getTotalChunks());
         log.info("Partition      : {}, Offset: {}", partition, offset);
         log.info("============================================");
+
+        // ── Index repo before LLM review (skips if already indexed) ──
+        repoIndexerService.indexRepository(
+                request.getRepoFullName(), request.getPrNumber());
 
         // Call AI review
         List<ReviewResult> results = aiReviewService.process(request);
