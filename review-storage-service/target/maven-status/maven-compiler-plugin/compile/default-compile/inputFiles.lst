@@ -1,10 +1,15 @@
 D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\config\KafkaConsumerConfig.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\consumer\ReviewResultConsumer.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\controller\DashboardController.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\controller\ReviewController.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\controller\StorageController.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\dto\DashboardStatsDTO.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\dto\DeveloperStatsDTO.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\dto\ReviewResponseDTO.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\dto\ReviewSummaryDTO.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\dto\TrendDataDTO.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\entity\Review.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\repository\ReviewRepository.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\ReviewStorageServiceApplication.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\service\DashboardService.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\review-storage-service\src\main\java\com\aicodereview\storage\service\ReviewStorageService.java
