@@ -1,21 +1,20 @@
 package com.aicodereview.storage.service;
 
 import com.aicodereview.common.dto.ReviewResult;
+import com.aicodereview.common.enums.Severity;
 import com.aicodereview.storage.dto.ReviewResponseDTO;
 import com.aicodereview.storage.dto.ReviewSummaryDTO;
 import com.aicodereview.storage.entity.Review;
 import com.aicodereview.storage.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import com.aicodereview.common.enums.Severity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import java.util.List;
-
-// import java.math.BigDecimal;
-
 import org.springframework.stereotype.Service;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -67,10 +66,13 @@ public class ReviewStorageService {
     }
 
     public ReviewSummaryDTO getSummaryByPR(String repo, Integer prNumber) {
-        long total = reviewRepository.countByRepositoryAndPrNumber(repo, prNumber);
-        long high = reviewRepository.countByRepositoryAndPrNumberAndSeverity(repo, prNumber, Severity.HIGH);
-        long medium = reviewRepository.countByRepositoryAndPrNumberAndSeverity(repo, prNumber, Severity.MEDIUM);
-        long low = reviewRepository.countByRepositoryAndPrNumberAndSeverity(repo, prNumber, Severity.LOW);
+        long total  = reviewRepository.countByRepositoryAndPrNumber(repo, prNumber);
+        long high   = reviewRepository.countByRepositoryAndPrNumberAndSeverity(
+                repo, prNumber, Severity.HIGH);
+        long medium = reviewRepository.countByRepositoryAndPrNumberAndSeverity(
+                repo, prNumber, Severity.MEDIUM);
+        long low    = reviewRepository.countByRepositoryAndPrNumberAndSeverity(
+                repo, prNumber, Severity.LOW);
 
         String risk = high > 0 ? "HIGH" : medium > 0 ? "MEDIUM" : "LOW";
 
@@ -89,6 +91,15 @@ public class ReviewStorageService {
         return reviewRepository
                 .findByRepositoryOrderByCreatedAtDesc(repo, pageable)
                 .map(this::toDTO);
+    }
+
+    public Map<String, Long> getLanguageStats(String repo) {
+        List<Object[]> raw = reviewRepository.countByLanguageForRepo(repo);
+        Map<String, Long> stats = new LinkedHashMap<>();
+        for (Object[] row : raw) {
+            stats.put((String) row[0], ((Number) row[1]).longValue());
+        }
+        return stats;
     }
 
     private ReviewResponseDTO toDTO(Review review) {

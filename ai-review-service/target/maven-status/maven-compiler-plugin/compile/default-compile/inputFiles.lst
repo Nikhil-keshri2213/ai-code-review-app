@@ -16,3 +16,4 @@ D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java
 D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\service\SeverityScorer.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\service\WeaviateStorageService.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\util\LanguageDetector.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\ai-review-service\src\main\java\com\aicodereview\review\util\LanguageInfo.java

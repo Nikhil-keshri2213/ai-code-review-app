@@ -12,3 +12,4 @@ D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\jav
 D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\java\com\aicodereview\fetch\service\CodeFetchService.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\java\com\aicodereview\fetch\util\CodeChunker.java
 D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\java\com\aicodereview\fetch\util\DiffParser.java
+D:\Programming\Ai_Code_Review\ai-code-review-app\code-fetch-service\src\main\java\com\aicodereview\fetch\util\LanguageDetector.java

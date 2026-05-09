@@ -5,6 +5,7 @@ import com.aicodereview.fetch.dto.DiffResult;
 import com.aicodereview.fetch.dto.GitHubPRFile;
 import com.aicodereview.fetch.util.CodeChunker;
 import com.aicodereview.fetch.util.DiffParser;
+import com.aicodereview.fetch.util.LanguageDetector;
 import com.aicodereview.common.dto.PullRequestEvent;
 import com.aicodereview.common.dto.ReviewRequest;
 import lombok.RequiredArgsConstructor;
@@ -121,7 +122,7 @@ public class CodeFetchService {
                 .fileName(file.getFilename())
                 .fileContent(fileContent)
                 .diffContent(diffContent)
-                .language(file.detectLanguage())
+                .language(LanguageDetector.detect(file.getFilename()))
                 .headSha(event.getHeadSha())
                 .senderLogin(event.getSenderLogin())
                 .chunkIndex(chunkIndex)

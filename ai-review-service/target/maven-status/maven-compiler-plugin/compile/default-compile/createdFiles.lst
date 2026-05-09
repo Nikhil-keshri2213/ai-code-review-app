@@ -15,5 +15,6 @@ com\aicodereview\review\service\WeaviateStorageService.class
 com\aicodereview\review\controller\ReviewController.class
 com\aicodereview\review\AiReviewServiceApplication.class
 com\aicodereview\review\service\LLMService.class
+com\aicodereview\review\util\LanguageInfo.class
 com\aicodereview\review\controller\AITestController.class
 com\aicodereview\review\service\EmbeddingService.class

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -22,7 +23,6 @@ public class ReviewController {
 
     private final ReviewStorageService reviewStorageService;
 
-    // GET all reviews for a specific PR
     @GetMapping("/{owner}/{repo}/pulls/{prNumber}")
     public ResponseEntity<ApiResponse<List<ReviewResponseDTO>>> getReviewsByPR(
             @PathVariable String owner,
@@ -39,7 +39,6 @@ public class ReviewController {
                 "Found " + reviews.size() + " reviews", reviews));
     }
 
-    // GET summary for a specific PR
     @GetMapping("/{owner}/{repo}/pulls/{prNumber}/summary")
     public ResponseEntity<ApiResponse<ReviewSummaryDTO>> getSummary(
             @PathVariable String owner,
@@ -55,7 +54,6 @@ public class ReviewController {
         return ResponseEntity.ok(ApiResponse.success(summary));
     }
 
-    // GET paginated history for a repo
     @GetMapping("/{owner}/{repo}/history")
     public ResponseEntity<ApiResponse<Page<ReviewResponseDTO>>> getHistory(
             @PathVariable String owner,
@@ -72,5 +70,19 @@ public class ReviewController {
                 reviewStorageService.getHistory(repoFullName, pageable);
 
         return ResponseEntity.ok(ApiResponse.success(history));
+    }
+
+    @GetMapping("/{owner}/{repo}/languages")
+    public ResponseEntity<ApiResponse<Map<String, Long>>> getLanguageStats(
+            @PathVariable String owner,
+            @PathVariable String repo) {
+
+        String repoFullName = owner + "/" + repo;
+        log.info("GET language stats — repo: {}", repoFullName);
+
+        Map<String, Long> stats =
+                reviewStorageService.getLanguageStats(repoFullName);
+
+        return ResponseEntity.ok(ApiResponse.success(stats));
     }
 }

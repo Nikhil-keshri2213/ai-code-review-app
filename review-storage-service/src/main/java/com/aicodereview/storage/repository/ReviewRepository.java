@@ -34,4 +34,28 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
            "WHERE r.repository = :repo ORDER BY r.prNumber DESC")
     List<Integer> findDistinctPrNumbersByRepository(
             @Param("repo") String repository);
+
+    @Query(value = """
+            SELECT
+                CASE
+                    WHEN file_name LIKE '%.java' THEN 'java'
+                    WHEN file_name LIKE '%.py'   THEN 'python'
+                    WHEN file_name LIKE '%.js'   THEN 'javascript'
+                    WHEN file_name LIKE '%.ts'   THEN 'typescript'
+                    WHEN file_name LIKE '%.go'   THEN 'go'
+                    WHEN file_name LIKE '%.rs'   THEN 'rust'
+                    WHEN file_name LIKE '%.kt'   THEN 'kotlin'
+                    WHEN file_name LIKE '%.sql'  THEN 'sql'
+                    WHEN file_name LIKE '%.sh'   THEN 'shell'
+                    WHEN file_name LIKE '%.cpp'  THEN 'cpp'
+                    WHEN file_name LIKE '%.md'   THEN 'markdown'
+                    ELSE 'other'
+                END AS language,
+                COUNT(*) AS issue_count
+            FROM reviews
+            WHERE repository = :repo
+            GROUP BY language
+            ORDER BY issue_count DESC
+            """, nativeQuery = true)
+    List<Object[]> countByLanguageForRepo(@Param("repo") String repository);
 }
