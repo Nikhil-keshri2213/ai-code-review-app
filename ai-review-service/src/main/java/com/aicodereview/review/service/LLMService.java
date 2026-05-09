@@ -26,6 +26,7 @@ public class LLMService {
     private final PromptTemplateService promptTemplateService;
     private final ObjectMapper objectMapper;
     private final SeverityScorer severityScorer;
+    private final RagContextService ragContextService;
 
     public List<ReviewResult> reviewCode(ReviewRequest request) {
         log.info("Calling LLM for file: {} lang: {} chunk: {}/{}",
@@ -35,28 +36,39 @@ public class LLMService {
                 request.getTotalChunks());
 
         try {
+            // RAG — get similar code context
+            String ragContext = "";
+            if (request.getFileContent() != null
+                    && !request.getFileContent().isBlank()) {
+                ragContext = ragContextService.getContext(
+                        request.getFileContent(),
+                        request.getRepoFullName(),
+                        request.getFileName());
+                if (!ragContext.isBlank()) {
+                    log.info("RAG context injected for file: {}",
+                            request.getFileName());
+                }
+            }
+
+            // Build prompts with RAG context
             String systemPrompt = promptTemplateService
-                    .buildSystemPrompt(request.getLanguage());
+                    .buildSystemPrompt(request.getLanguage(), ragContext);
             String userPrompt = promptTemplateService
                     .buildUserPrompt(request);
 
+            // Call LLM
             String rawResponse = openAIClient.chat(systemPrompt, userPrompt);
             log.debug("Raw LLM response: {}", rawResponse);
 
+            // Parse + score
             List<ReviewComment> comments = parseResponse(rawResponse);
             log.info("Parsed {} issues from LLM for file: {}",
                     comments.size(), request.getFileName());
 
             List<ReviewResult> results = mapToResults(comments, request);
-
-            // Apply severity scoring
-            results = results.stream()
-                    .map(severityScorer::score)
-                    .toList();
+            results = results.stream().map(severityScorer::score).toList();
 
             if (results.isEmpty()) {
-                log.info("No issues found for file: {} — adding placeholder",
-                        request.getFileName());
                 ReviewResult placeholder = severityScorer.score(
                         buildNoIssuesResult(request));
                 results = List.of(placeholder);
@@ -93,7 +105,8 @@ public class LLMService {
 
         try {
             return objectMapper.readValue(cleaned,
-                    new TypeReference<List<ReviewComment>>() {});
+                    new TypeReference<List<ReviewComment>>() {
+                    });
         } catch (Exception e) {
             log.warn("Failed to parse LLM JSON response: {} — raw: {}",
                     e.getMessage(),
@@ -103,7 +116,7 @@ public class LLMService {
     }
 
     private List<ReviewResult> mapToResults(List<ReviewComment> comments,
-                                             ReviewRequest request) {
+            ReviewRequest request) {
         List<ReviewResult> results = new ArrayList<>();
         for (ReviewComment comment : comments) {
             results.add(ReviewResult.builder()
@@ -127,15 +140,23 @@ public class LLMService {
     }
 
     private Severity parseSeverity(String s) {
-        if (s == null) return Severity.LOW;
-        try { return Severity.valueOf(s.toUpperCase().trim()); }
-        catch (Exception e) { return Severity.LOW; }
+        if (s == null)
+            return Severity.LOW;
+        try {
+            return Severity.valueOf(s.toUpperCase().trim());
+        } catch (Exception e) {
+            return Severity.LOW;
+        }
     }
 
     private ReviewCategory parseCategory(String c) {
-        if (c == null) return ReviewCategory.OTHER;
-        try { return ReviewCategory.valueOf(c.toUpperCase().trim()); }
-        catch (Exception e) { return ReviewCategory.OTHER; }
+        if (c == null)
+            return ReviewCategory.OTHER;
+        try {
+            return ReviewCategory.valueOf(c.toUpperCase().trim());
+        } catch (Exception e) {
+            return ReviewCategory.OTHER;
+        }
     }
 
     private ReviewResult buildNoIssuesResult(ReviewRequest request) {
