@@ -12,6 +12,7 @@ com\aicodereview\storage\controller\StorageController.class
 com\aicodereview\storage\entity\Review$ReviewBuilder.class
 com\aicodereview\storage\ReviewStorageServiceApplication.class
 com\aicodereview\storage\consumer\ReviewResultConsumer.class
+com\aicodereview\storage\config\CorsConfig.class
 com\aicodereview\storage\dto\DashboardStatsDTO$DashboardStatsDTOBuilder.class
 com\aicodereview\storage\dto\TrendDataDTO$TrendDataDTOBuilder.class
 com\aicodereview\storage\entity\Review.class
