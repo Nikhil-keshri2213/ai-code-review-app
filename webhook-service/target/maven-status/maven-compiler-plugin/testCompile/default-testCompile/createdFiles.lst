@@ -1,1 +1,2 @@
 com\aicodereview\webhook\security\GitHubSignatureValidatorTest.class
+com\aicodereview\webhook\e2e\WebhookE2ETest.class

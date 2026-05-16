@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: webhook-service
+
+  cloud:
+    discovery:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+
+github:
+  webhook:
+    secret: my-webhook-secret
+
+logging:
+  level:
+    com.netflix.discovery: OFF
+    org.springframework.cloud.netflix.eureka: OFF
