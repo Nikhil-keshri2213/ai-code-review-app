@@ -10,6 +10,7 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -31,7 +32,8 @@ public class WebhookService {
             PullRequestEvent event = objectMapper
                     .readValue(payload, PullRequestEvent.class);
 
-            log.info("PR Event received — action: {}, repo: {}, PR#: {}, by: {}",
+            log.info(
+                    "PR Event received — action: {}, repo: {}, PR#: {}, by: {}",
                     event.getAction(),
                     event.getRepoFullName(),
                     event.getPrNumber(),
@@ -39,37 +41,61 @@ public class WebhookService {
             );
 
             if (!PROCESSABLE_ACTIONS.contains(event.getAction())) {
-                log.info("Ignoring PR action '{}' — only processing: {}",
-                        event.getAction(), PROCESSABLE_ACTIONS);
+                log.info(
+                        "Ignoring PR action '{}' — only processing: {}",
+                        event.getAction(),
+                        PROCESSABLE_ACTIONS
+                );
                 return;
             }
-            
-            // inside handlePullRequestEvent(), after parsing the event
-            event.setCorrelationId(java.util.UUID.randomUUID().toString());
-            
+
+            // generate correlation id
+            event.setCorrelationId(UUID.randomUUID().toString());
+
             publishToKafka(event);
 
         } catch (Exception e) {
-            log.error("Failed to process PR event: {}", e.getMessage());
-            throw new RuntimeException("Failed to process webhook payload", e);
+            log.error(
+                    "Failed to process PR event: {}",
+                    e.getMessage(),
+                    e
+            );
+
+            throw new RuntimeException(
+                    "Failed to process webhook payload",
+                    e
+            );
         }
     }
 
     private void publishToKafka(PullRequestEvent event) {
-        String messageKey = event.getRepoFullName();
+
+        // Better partition distribution
+        String messageKey =
+                event.getRepoFullName() + "-" + event.getPrNumber();
 
         CompletableFuture<SendResult<String, Object>> future =
-                kafkaTemplate.send(prEventsTopic, messageKey, event);
+                kafkaTemplate.send(
+                        prEventsTopic,
+                        messageKey,
+                        event
+                );
 
         future.whenComplete((result, ex) -> {
             if (ex == null) {
-                log.info("Published to Kafka — topic: {}, partition: {}, offset: {}",
+                log.info(
+                        "Published to Kafka — key: {}, topic: {}, partition: {}, offset: {}",
+                        messageKey,
                         result.getRecordMetadata().topic(),
                         result.getRecordMetadata().partition(),
                         result.getRecordMetadata().offset()
                 );
             } else {
-                log.error("Failed to publish to Kafka: {}", ex.getMessage());
+                log.error(
+                        "Failed to publish to Kafka: {}",
+                        ex.getMessage(),
+                        ex
+                );
             }
         });
     }

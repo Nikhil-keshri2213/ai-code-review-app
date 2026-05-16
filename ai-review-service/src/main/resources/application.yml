@@ -58,3 +58,6 @@ eureka:
 openai:
   api:
     key: ${OPENAI_API_KEY}
+
+github:
+  token: ${GITHUB_TOKEN:dummy-token}
