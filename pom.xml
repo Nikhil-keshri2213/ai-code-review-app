@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
@@ -16,18 +17,24 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.2</version>
+        <version>3.5.14</version>
         <relativePath/>
     </parent>
 
     <properties>
         <java.version>21</java.version>
-        <spring-cloud.version>2023.0.2</spring-cloud.version>
+
+        <spring-boot.version>3.5.14</spring-boot.version>
+        <spring-cloud.version>2025.0.0</spring-cloud.version>
+
         <spring-ai.version>1.0.0-M4</spring-ai.version>
         <lombok.version>1.18.34</lombok.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <jackson.version>2.17.1</jackson.version>
         <flyway.version>10.15.0</flyway.version>
+
+        <!-- Security: explicit overrides for CVSS >= 9 findings -->
+        <grpc.version>1.81.0</grpc.version>
     </properties>
 
     <modules>
@@ -48,6 +55,7 @@
             <name>Spring Milestones</name>
             <url>https://repo.spring.io/milestone</url>
         </repository>
+
         <repository>
             <id>spring-snapshots</id>
             <name>Spring Snapshots</name>
@@ -58,23 +66,29 @@
     <dependencyManagement>
         <dependencies>
 
-            <!-- Common module -->
+            <!-- =========================================================== -->
+            <!-- Internal modules                                             -->
+            <!-- =========================================================== -->
             <dependency>
                 <groupId>com.ai.codereview</groupId>
                 <artifactId>common</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
-            <!-- Spring Boot BOM -->
+            <!-- =========================================================== -->
+            <!-- Spring Boot BOM — must come FIRST so all Boot starters       -->
+            <!-- get their versions from here. Never re-declare Boot starters -->
+            <!-- in dependencyManagement; they are already managed by this.   -->
+            <!-- =========================================================== -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>3.3.2</version>
+                <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
 
-            <!-- Spring Cloud BOM -->
+            <!-- Spring Cloud -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -83,7 +97,7 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- Spring AI BOM -->
+            <!-- Spring AI -->
             <dependency>
                 <groupId>org.springframework.ai</groupId>
                 <artifactId>spring-ai-bom</artifactId>
@@ -92,7 +106,42 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- Kafka -->
+            <!-- =========================================================== -->
+            <!-- Security fix: gRPC BOM — fixes CVE-2026-33186 (CVSS 9.1)   -->
+            <!-- Bumped from 1.62.2 to 1.81.0                                -->
+            <!-- =========================================================== -->
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-bom</artifactId>
+                <version>${grpc.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Testcontainers BOM -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>1.20.6</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- =========================================================== -->
+            <!-- Security fix: mxparser — CPE false-positive as xstream      -->
+            <!-- Pinned to latest available; suppression file also added.    -->
+            <!-- =========================================================== -->
+            <dependency>
+                <groupId>io.github.x-stream</groupId>
+                <artifactId>mxparser</artifactId>
+                <version>1.2.3</version>
+            </dependency>
+
+            <!-- =========================================================== -->
+            <!-- Non-Boot managed dependencies (version required here)       -->
+            <!-- =========================================================== -->
+
+            <!-- Kafka (not in Boot BOM at the version we need) -->
             <dependency>
                 <groupId>org.springframework.kafka</groupId>
                 <artifactId>spring-kafka</artifactId>
@@ -105,17 +154,11 @@
                 <artifactId>flyway-core</artifactId>
                 <version>${flyway.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-database-postgresql</artifactId>
                 <version>${flyway.version}</version>
-            </dependency>
-
-            <!-- Spring Data JPA -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-jpa</artifactId>
-                <version>3.3.2</version>
             </dependency>
 
             <!-- Lombok -->
@@ -125,7 +168,7 @@
                 <version>${lombok.version}</version>
             </dependency>
 
-            <!-- Jackson -->
+            <!-- Jackson (Boot BOM already manages this; explicit pin for clarity) -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
@@ -139,36 +182,43 @@
                 <version>${mapstruct.version}</version>
             </dependency>
 
+            <!-- dotenv -->
             <dependency>
                 <groupId>me.paulschwarz</groupId>
                 <artifactId>spring-dotenv</artifactId>
                 <version>4.0.0</version>
             </dependency>
-            
-            <!-- Eureka Server
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-            </dependency> -->
 
-            <!-- Testcontainers BOM -->
+            <!-- Security: force Tomcat 10.1.55 - fixes CVE-2026-41293/43512/43515 -->
+            <!-- Spring Boot 3.5.0 BOM ships 10.1.54; this overrides it -->
             <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers-bom</artifactId>
-                <version>1.20.6</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-core</artifactId>
+                <version>10.1.55</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-websocket</artifactId>
+                <version>10.1.55</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat.embed</groupId>
+                <artifactId>tomcat-embed-el</artifactId>
+                <version>10.1.55</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <build>
         <pluginManagement>
             <plugins>
+
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                 </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -177,6 +227,19 @@
                         <target>${java.version}</target>
                     </configuration>
                 </plugin>
+
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>12.1.0</version>
+                    <configuration>
+                        <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
+                        <nvdApiDelay>20000</nvdApiDelay>
+                        <nvdMaxRetryCount>10</nvdMaxRetryCount>
+                        <suppressionFile>security/dependency-check-suppressions.xml</suppressionFile>
+                    </configuration>
+                </plugin>
+
             </plugins>
         </pluginManagement>
     </build>

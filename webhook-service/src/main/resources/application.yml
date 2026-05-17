@@ -14,7 +14,7 @@ spring:
 
 github:
   webhook:
-    secret: my-webhook-secret
+    secret: ${WEBHOOK_SECRET:my-webhook-secret}
 
 kafka:
   topics:
