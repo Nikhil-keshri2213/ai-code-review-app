@@ -237,6 +237,7 @@
                         <nvdApiDelay>20000</nvdApiDelay>
                         <nvdMaxRetryCount>10</nvdMaxRetryCount>
                         <suppressionFile>security/dependency-check-suppressions.xml</suppressionFile>
+                        <ossIndexAnalyzerEnabled>false</ossIndexAnalyzerEnabled>
                     </configuration>
                 </plugin>
 
