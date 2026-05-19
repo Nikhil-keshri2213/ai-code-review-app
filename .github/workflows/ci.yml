@@ -43,8 +43,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Build and run unit tests
-        run: mvn -B clean verify -DskipITs
+      - name: Build and run unit tests (skip e2e — require Kafka/DB not available in CI)
+        run: mvn -B clean verify -DskipITs -Dgroups='!e2e'
         env:
           MAVEN_OPTS: "-Xmx1024m"
 
