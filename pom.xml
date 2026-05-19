@@ -30,7 +30,7 @@
         <spring-ai.version>1.0.0-M4</spring-ai.version>
         <lombok.version>1.18.34</lombok.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <jackson.version>2.17.1</jackson.version>
+        <!-- <jackson.version>2.17.1</jackson.version> -->
         <flyway.version>10.15.0</flyway.version>
 
         <!-- Security: explicit overrides for CVSS >= 9 findings -->
@@ -169,11 +169,11 @@
             </dependency>
 
             <!-- Jackson (Boot BOM already manages this; explicit pin for clarity) -->
-            <dependency>
+            <!-- <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
-            </dependency>
+            </dependency> -->
 
             <!-- MapStruct -->
             <dependency>
