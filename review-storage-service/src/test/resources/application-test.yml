@@ -1,6 +1,5 @@
 spring:
   profiles:
-    active: test
 
   docker:
     host: npipe:////./pipe/docker_engine
