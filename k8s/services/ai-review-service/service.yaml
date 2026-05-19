@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-review-service
+  namespace: ai-review
+spec:
+  type: ClusterIP
+  selector:
+    app: ai-review-service
+  ports:
+    - port: 8084
+      targetPort: 8084

@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: review-storage-service
+  namespace: ai-review
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: review-storage-service
+  template:
+    metadata:
+      labels:
+        app: review-storage-service
+    spec:
+      containers:
+        - name: review-storage-service
+          image: ai-code-review-app-review-storage-service:latest
+          imagePullPolicy: IfNotPresent
+
+          envFrom:
+            - configMapRef:
+                name: ai-review-config
+            - secretRef:
+                name: ai-review-secrets
+
+          ports:
+            - containerPort: 8085
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8085
+            initialDelaySeconds: 180
+            periodSeconds: 30
+            timeoutSeconds: 5
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8085
+            initialDelaySeconds: 180
+            periodSeconds: 30
+            timeoutSeconds: 5

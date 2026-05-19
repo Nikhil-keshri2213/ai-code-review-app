@@ -27,3 +27,4 @@ replay_pid*
 .env.prod
 *.txt
 *.ps1
+k8s/secret.yaml

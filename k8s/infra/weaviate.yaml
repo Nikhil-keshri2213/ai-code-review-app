@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weaviate
+  namespace: ai-review
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weaviate
+  template:
+    metadata:
+      labels:
+        app: weaviate
+    spec:
+      containers:
+        - name: weaviate
+          image: semitechnologies/weaviate:1.24.8
+          ports:
+            - containerPort: 8080
+          env:
+            - name: AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED
+              value: "true"
+
+            - name: PERSISTENCE_DATA_PATH
+              value: "/var/lib/weaviate"
+
+          volumeMounts:
+            - name: weaviate-storage
+              mountPath: /var/lib/weaviate
+
+      volumes:
+        - name: weaviate-storage
+          persistentVolumeClaim:
+            claimName: weaviate-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: weaviate-service
+  namespace: ai-review
+spec:
+  type: ClusterIP
+  selector:
+    app: weaviate
+  ports:
+    - port: 8080
+      targetPort: 8080
