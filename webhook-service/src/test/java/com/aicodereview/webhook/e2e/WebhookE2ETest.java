@@ -21,7 +21,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.junit.jupiter.api.Tag;
 
+@Tag("e2e")
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
