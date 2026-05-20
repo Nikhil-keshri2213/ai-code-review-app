@@ -1,5 +1,0 @@
-# Created at 2026-05-19T17:33:47.997
-Boot Manifest-JAR contains absolute paths in classpath 'D:\Programming\Ai_Code_Review\ai-code-review-app\webhook-service\target\test-classes'
-Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
-'other' has different root
-

@@ -61,3 +61,13 @@ openai:
 
 github:
   token: ${GITHUB_TOKEN:dummy-token}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
