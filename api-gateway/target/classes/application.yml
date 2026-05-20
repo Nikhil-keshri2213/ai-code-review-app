@@ -68,7 +68,11 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,gateway
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
 
 logging:
   level:
