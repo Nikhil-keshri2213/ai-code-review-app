@@ -30,6 +30,7 @@ jobs:
   deploy:
     name: Deploy ${{ matrix.service }} to K8s
     runs-on: ubuntu-latest
+    if: ${{ secrets.KUBE_CONFIG != '' && secrets.KUBE_CONFIG != 'placeholder' }}
 
     # Only run if CI passed on main branch
     if: >
