@@ -3,6 +3,8 @@ package com.aicodereview.webhook.controller;
 import com.aicodereview.webhook.exception.InvalidSignatureException;
 import com.aicodereview.webhook.security.GitHubSignatureValidator;
 import com.aicodereview.webhook.service.WebhookService;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -11,12 +13,19 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/webhook")
-@RequiredArgsConstructor
 public class WebhookController {
 
     private final GitHubSignatureValidator signatureValidator;
     private final WebhookService webhookService;
+    private final MeterRegistry meterRegistry;
 
+    public WebhookController(GitHubSignatureValidator signatureValidator,
+                             WebhookService webhookService,
+                             MeterRegistry meterRegistry) {
+        this.signatureValidator = signatureValidator;
+        this.webhookService = webhookService;
+        this.meterRegistry = meterRegistry;
+    }
 
     @GetMapping("/health")
     public String health() {
@@ -31,6 +40,12 @@ public class WebhookController {
 
         log.info("Received GitHub webhook — event type: {}, payload size: {} bytes",
                 eventType, payload.length);
+
+        // Track every incoming webhook event by type
+        Counter.builder("webhook.events.received.total")
+                .tag("event", eventType)
+                .register(meterRegistry)
+                .increment();
 
         // Step 1 — validate HMAC signature
         if (!signatureValidator.isValid(payload, signature)) {

@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +22,7 @@ public class OpenAIClient {
 
     private final OkHttpClient http;
     private final ObjectMapper mapper;
+    private final MeterRegistry meterRegistry;
 
     @Value("${ai.provider}")
     private String activeProvider;
@@ -44,7 +48,8 @@ public class OpenAIClient {
     @Value("${ai.providers.ollama.model}")
     private String ollamaModel;
 
-    public OpenAIClient() {
+    public OpenAIClient(MeterRegistry meterRegistry) {
+        this.meterRegistry = meterRegistry;
         this.http = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(120, TimeUnit.SECONDS)
@@ -87,6 +92,9 @@ public class OpenAIClient {
 
         log.info("Calling AI provider: {} model: {}", activeProvider, model);
 
+        // Start LLM latency timer
+        Timer.Sample sample = Timer.start(meterRegistry);
+
         try {
             ObjectNode body = mapper.createObjectNode();
             body.put("model", model);
@@ -109,17 +117,42 @@ public class OpenAIClient {
                 if (!response.isSuccessful()) {
                     log.error("AI API error — provider: {}, status: {}, body: {}",
                             activeProvider, response.code(), responseBody);
+
+                    // Stop timer on error + increment error counter
+                    sample.stop(meterRegistry.timer("llm.call.duration",
+                            "provider", activeProvider, "status", "error"));
+                    Counter.builder("reviews.processed.total")
+                            .tag("status", "error")
+                            .register(meterRegistry)
+                            .increment();
+
                     throw new RuntimeException("AI API error " + response.code()
                             + ": " + responseBody);
                 }
+
                 log.info("AI response status: {}", response.code());
                 JsonNode json = mapper.readTree(responseBody);
-                return json.path("choices").get(0)
+                String result = json.path("choices").get(0)
                         .path("message").path("content").asText();
+
+                // Stop timer on success + increment success counter
+                sample.stop(meterRegistry.timer("llm.call.duration",
+                        "provider", activeProvider, "status", "success"));
+                Counter.builder("reviews.processed.total")
+                        .tag("status", "success")
+                        .register(meterRegistry)
+                        .increment();
+
+                return result;
             }
         } catch (Exception e) {
             log.error("AI call failed — provider: {}, error: {}",
                     activeProvider, e.getMessage());
+
+            // Stop timer if exception thrown before response
+            sample.stop(meterRegistry.timer("llm.call.duration",
+                    "provider", activeProvider, "status", "error"));
+
             throw new RuntimeException("AI call failed", e);
         }
     }

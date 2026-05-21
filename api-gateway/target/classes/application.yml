@@ -64,17 +64,25 @@ eureka:
   instance:
     prefer-ip-address: true
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info
-  endpoint:
-    health:
-      probes:
-        enabled: true
-
 logging:
   level:
     org.springframework.cloud.gateway: INFO
     com.ai.codereview: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+
+  endpoint:
+    health:
+      probes:
+        enabled: true
+    prometheus:
+      access: unrestricted
+
+  metrics:
+    export:
+      prometheus:
+        enabled: true

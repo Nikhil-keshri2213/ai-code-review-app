@@ -1,0 +1,92 @@
+{
+  "uid": "llm-latency",
+  "title": "LLM Latency & Review Throughput",
+  "tags": ["llm", "ai-review"],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "refresh": "15s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "LLM Call Latency p95 (seconds)",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, rate(llm_call_duration_seconds_bucket[5m]))",
+          "legendFormat": "p95 - {{provider}}",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.50, rate(llm_call_duration_seconds_bucket[5m]))",
+          "legendFormat": "p50 - {{provider}}",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "s" }
+      }
+    },
+    {
+      "id": 2,
+      "title": "Review Error Rate (errors/s)",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(reviews_processed_total{status=\"error\"}[5m])",
+          "legendFormat": "errors/s",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "color": { "fixedColor": "red", "mode": "fixed" }
+        }
+      }
+    },
+    {
+      "id": 3,
+      "title": "Review Throughput (success/s)",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(reviews_processed_total{status=\"success\"}[5m])",
+          "legendFormat": "success/s",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "color": { "fixedColor": "green", "mode": "fixed" }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "Total Reviews Processed",
+      "type": "stat",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum(reviews_processed_total{status=\"success\"})",
+          "legendFormat": "Total Success",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": { "fixedColor": "green", "mode": "fixed" }
+        }
+      }
+    }
+  ]
+}

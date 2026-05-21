@@ -1,0 +1,40 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+
+  - job_name: api-gateway
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ "ai-review-gateway:8080" ]
+
+  - job_name: webhook-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ "ai-review-webhook:8081" ]
+
+  - job_name: code-fetch-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ "ai-review-code-fetch:8082" ]
+
+  - job_name: code-analysis-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ "ai-review-code-analysis:8083" ]
+
+  - job_name: ai-review-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ "ai-review-aireview:8084" ]
+
+  - job_name: review-storage-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ "ai-review-storage:8085" ]
+
+  - job_name: notification-service
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [ "ai-review-notification:8086" ]

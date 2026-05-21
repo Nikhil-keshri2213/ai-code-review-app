@@ -1,0 +1,64 @@
+{
+  "uid": "kafka-lag",
+  "title": "Kafka Lag",
+  "tags": ["kafka"],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "refresh": "15s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Consumer Lag per Topic",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "spring_kafka_listener_seconds_count",
+          "legendFormat": "{{topic}} - {{group}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "color": { "mode": "palette-classic" }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "Kafka Listener Processing Rate (msg/s)",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(spring_kafka_listener_seconds_count[1m])",
+          "legendFormat": "{{topic}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "reqps" }
+      }
+    },
+    {
+      "id": 3,
+      "title": "Kafka Listener Avg Latency (ms)",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 },
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(spring_kafka_listener_seconds_sum[1m]) / rate(spring_kafka_listener_seconds_count[1m]) * 1000",
+          "legendFormat": "{{topic}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "ms" }
+      }
+    }
+  ]
+}
